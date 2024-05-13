@@ -3,10 +3,11 @@
     "beforeDevCommand": "yarn dev",
     "beforeBuildCommand": "yarn build",
     "devPath": "http://localhost:1420",
-    "distDir": "../dist"
+    "distDir": "../dist",
+    "withGlobalTauri": true
   },
   "package": {
-    "productName": "tauri-app",
+    "productName": "tauri-todo",
     "version": "0.0.0"
   },
   "tauri": {
@@ -19,9 +20,19 @@
     },
     "windows": [
       {
-        "title": "tauri-app",
+        "title": "tauri-todo",
+        "fullscreen": false,
         "width": 1280,
-        "height": 800
+        "height": 800,
+        "resizable": true,
+		    "visible": false
+      },
+      {
+        "width": 800,
+        "height": 600,
+        "decorations": false,
+        "url": "splashscreen.html",
+        "label": "splashscreen"
       }
     ],
     "security": {
@@ -30,7 +41,7 @@
     "bundle": {
       "active": true,
       "targets": "all",
-      "identifier": "com.tauri.dev",
+      "identifier": "com.tauri-todo.dev",
       "icon": [
         "icons/32x32.png",
         "icons/128x128.png",

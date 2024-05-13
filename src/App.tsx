@@ -1,19 +1,39 @@
-import { useState } from "react";
-// import { invoke } from "@tauri-apps/api/tauri";
+import { useState, useEffect } from "react";
+import { invoke } from "@tauri-apps/api/tauri";
 import "./App.css";
 
+interface Todo {
+  id: number,
+  title: string,
+  date: string,
+  done: boolean
+}
+
 function App() {
-  const [todos, setTodos] = useState<string[]>([]);
-  const [todo, setTodo] = useState("");
+  const [todos, setTodos] = useState<Todo[]>([]);
+  const [todo, setTodo] = useState<Todo>({id:-1, title:"", date:"None", done:false});
+
+  useEffect(()=> {
+    fetchAllTodo();
+  }, [todos]);
+
+  const fetchAllTodo = async () => {
+    setTodos(await invoke("get_todos"));
+  }
+
+  const handleTitleChange = (e: React.FormEvent<HTMLInputElement>) => {
+    let value = e.currentTarget.value;
+    setTodo({...todo, title:value});
+  }
 
   const handleTaskAdd = async () => {
-    setTodos([todo, ...todos]);
-    setTodo('');
+    // setTodos([todo, ...todos]);
+    // setTodo('');
   }
 
   const handleTaskDelete = async (index: any) => {
-    setTodos(todos.filter(e => e !== todos[index]));
-    setTodo('');
+    // setTodos(todos.filter(e => e !== todos[index]));
+    // setTodo('');
   }
 
   return (
@@ -22,9 +42,9 @@ function App() {
       <div className="row">
         <input
           id="greet-input"
-          onChange={(e) => setTodo(e.currentTarget.value)}
+          onChange={(e) => handleTitleChange(e)}
           placeholder="Enter a task..."
-          value={todo}
+          value={todo.title}
         />
         <button type="button" onClick={() => handleTaskAdd()}>
           Add
@@ -34,7 +54,7 @@ function App() {
       {todos.map((todo, index) => {
         return (
           <div className="row" key={index}>
-            <div style={{padding:'8px'}}>{todo}</div>
+            <div style={{padding:'8px'}}>{todo.title}</div>
             <button type="button" onClick={() => handleTaskDelete(index)}>
               Delete
             </button>
