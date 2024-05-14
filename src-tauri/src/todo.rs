@@ -69,9 +69,22 @@ impl TodoApp {
   pub fn done_todo(&self, id: i32) -> bool {
     match self
       .conn
-      .execute("UPDATE Todo SET done=1 WHERE id=$1", [id])
+      .execute("UPDATE Todo SET done=1 WHERE id=$1 AND done=0", [id])
       {
         Ok(done) => {
+          if done == 0 {
+            match self
+            .conn
+            .execute("UPDATE Todo SET done=0 WHERE id=$1 AND done=1", [id])
+            {
+              Ok(undone) => {
+                println!("{} undone", undone);
+              }
+              Err(err) => {
+                println!("Undone Error: {}", err);
+              }
+            }
+          }
           println!("{} done", done);
           true
         }
